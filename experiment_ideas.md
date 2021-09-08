@@ -27,7 +27,7 @@
 * What hyperparameters do we want to explore?
   * Learning rate
   * Network architecture (depth, type, activation, etc.)
-  * Optimizer hyperparameters (e.g. momentum)
+  * Optimizer hyperparameters (e.g. momentum, weight decay)
   * ?
 
 * What ablation studies do we want to include?
