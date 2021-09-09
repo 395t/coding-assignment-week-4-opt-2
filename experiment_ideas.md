@@ -38,6 +38,11 @@
   * Augmentation?
   * ?
 
+* Practical aspects of optimizer
+  * Training time comparison
+  * Working memory comparison
+  * Stability of runs?
+
 * What ablation studies do we want to include?
   * Benefits of momentum
   * Benefits of per-parameter adaptation of learning rate
