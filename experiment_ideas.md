@@ -24,6 +24,11 @@
   * Basic RNN
   * Bi-Directional LSTM 
 
+### Experiments on 3 Datasets:
+* Adam vs AMSGrad vs Adagrad(?) - Compare performance (show loss plots and accuracy) for all three datasets
+* Adam vs AMSGrad - performance with non-convex loss functions (Adam converges on sub-optimal solution)
+* Adam vs AMSGrad - Robustness to parameter changes
+
 
 ## Questions to answer
 * What hyperparameters do we want to explore?
