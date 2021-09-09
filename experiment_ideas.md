@@ -20,7 +20,9 @@
 * Task: Multi-label classification
 * Number of labels: 4271 -- but maybe we should probably use the 746 "frequent" labels?
 * Network architectures considered:
-  * BERT: which one?
+  * BERT: which one? (Maybe raw transformer?)
+  * Basic RNN
+  * Bi-Directional LSTM 
 
 
 ## Questions to answer
@@ -28,6 +30,7 @@
   * Learning rate
   * Network architecture (depth, type, activation, etc.)
   * Optimizer hyperparameters (e.g. momentum, weight decay)
+  * Augmentation?
   * ?
 
 * What ablation studies do we want to include?
@@ -35,3 +38,8 @@
   * Benefits of per-parameter adaptation of learning rate
   * ?
 
+# Goals
+* implement the core idea of five papers on a standard architecture and task/dataset
+* evaluate implementation on 3 different datasets
+* compare the relative performance, stability (to hyper-parameters) across all datasets
+* draw conclusions for which methods work best (or if there is no clear winner)
