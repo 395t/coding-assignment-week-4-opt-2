@@ -47,7 +47,7 @@ Adam with AMSgrad   | <img src="Plots/Adam_with_AMSgrad_LR_vs_Loss.png" height="
 AdamW               | <img src="Plots/AdamW_LR_vs_Loss.png" height="300"/>              |  <img src="Plots/AdamW_LR_vs_P@1.png" height="300"/>
 
 ### Comparison of Adam vs AdamW w.r.t. Weight Decay
-Here we compare the test Precision@1 for Adam and AdamW with different weight decays. For the same learning rate, we observe that Adam fails to train for non-zero weight decay while AdamW suffers with no such problem. It's worth noting that weight decay seems to play no significant effect on the final results obtained in case of AdamW which might be happening because of already presenet heavy regularization from dropout (present in both DistilBERT and just before fully connected linear layer).
+Here we compare the test Precision@1 for Adam and AdamW with different weight decays. For the same learning rate, we observe that Adam fails to train for non-zero weight decay while AdamW doesn't suffer from any such problem. It's worth noting that weight decay seems to play no significant effect on the final results obtained which might be happening because of already present heavy regularization from dropout (both in DistilBERT and just before fully connected linear layer).
 
 Adam                                                            |  AdamW
 :--------------------------------------------------------------:|:---------------------------------------------------------------:
