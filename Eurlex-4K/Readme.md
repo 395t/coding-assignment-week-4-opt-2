@@ -4,6 +4,11 @@
 * Adam and its variants perform the best with learning rate around ```1e-4```
 * AdamW works better than Adam when using weight decay during training
 
+## Running the Code
+``` bash
+pip install -r requirements.txt
+python eurlex-train.py
+```
 
 ## Setup
 ### Dataset
