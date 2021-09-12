@@ -1,9 +1,24 @@
 import glob
 import os
+import attr
 import numpy as np
 import torch
+import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 from torchvision.utils import make_grid
+
+
+@attr.s(kw_only=True)
+class HParams:
+    out_dir = attr.ib()
+    z_dim = attr.ib()
+    lr = attr.ib()
+    epochs = attr.ib()
+    opt_name = attr.ib()
+    opt_kwargs = attr.ib(factory=dict)
+    use_cuda = attr.ib(default=True)
+    ckpt_freq = attr.ib(default=20)
+    sample_freq = attr.ib(default=5)
 
 
 class Logger:
@@ -62,15 +77,18 @@ def tanh_to_uint8(x):
     return x
 
 
-# def test():
-#     z = torch.randn(20)
-#     mu = torch.randn(20) 
-#     sig = torch.randn(20).clamp(0.0) + 0.5
-#     logp = normal_logpdf(z[None], mu=mu[None], sig=sig[None])
-#     print(logp)
-#     from scipy.stats import multivariate_normal
-#     mvn = multivariate_normal(mean=mu.numpy(), cov=np.diag(sig.numpy() ** 2))
-#     print(mvn.logpdf(z.numpy()))
-#     import ipdb; ipdb.set_trace()
+def get_optimizer(name, params, **kwargs):
+    optim_cls = {
+        'adagrad': optim.Adagrad,
+        'adadelta': optim.Adadelta,
+        'adam': optim.Adam,
+        'amsgrad': optim.Adam,
+        'adamw': optim.AdamW,
+    }[name]
 
-# test()
+    if name in ('adam', 'amsgrad'):
+        return optim_cls(params, amsgrad=(name == 'amsgrad'), **kwargs)
+    else:
+        return optim_cls(params, **kwargs)
+
+    
