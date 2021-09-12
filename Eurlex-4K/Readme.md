@@ -11,4 +11,10 @@ Following optimizers are compared.
 * [Adam with AMSgrad](https://arxiv.org/abs/1904.09237)
 * [AdamW](https://arxiv.org/abs/1711.05101)
 
+![Optimizer_Comparison](Plots/Optimizer_Comparison.png)
+
+Optimizer          | Loss             |  Test Precision@1
+:-------------------------:|:-------------------------:|:-------------------------:
+Adagrad   | ![](Plots/Adagrad_LR_vs_Loss.png)  |  ![](Plots/Adagrad_LR_vs_P@1.png)
+
 ## Summary
