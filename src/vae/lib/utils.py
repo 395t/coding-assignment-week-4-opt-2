@@ -8,6 +8,9 @@ from torch.utils.tensorboard import SummaryWriter
 from torchvision.utils import make_grid
 
 
+OPT_NAMES = ['adagrad', 'adadelta', 'adam', 'amsgrad', 'adamw']
+
+
 @attr.s(kw_only=True)
 class HParams:
     out_dir = attr.ib()

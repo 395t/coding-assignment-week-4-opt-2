@@ -91,6 +91,51 @@ The above table shows test accuracies for hyperparameters at ``learning rate = 1
 
 The clear-winners in the Tiny ImageNet experiments were the Adam Optimizers. The difference in their accuracies is not too significant from each other which makes it difficult to pick a clear-winner. However, if we had to choose, we would say it is AdamW due to its high performance and overall robustness to hyperparameters such as learning rate, momentum, and weight decay.
 
-## Reference
+----
 
-Any code that you borrow or other reference should be properly cited.
+## VAE Experiments
+
+### **Task and Dataset**
+
+In additional to image and text classification, we decided to compare different optimizers on a generative modeling task.  Specifically, we chose to train and evaluate a Variational Autoencoder [2] trained on the Street View House Numbers (SVHN) dataset [1].
+
+The SVHN dataset is a moderately complex dataset with 32x32 color images of house numbers from Google Street View.  It comes with 73257 training and 26032 test images.  Below are some sample images from the dataset.
+
+![Samples from the SVHN dataset.](http://ufldl.stanford.edu/housenumbers/32x32eg.png)  
+**Source**: [The Street View House Numbers (SVHN) Dataset](http://ufldl.stanford.edu/housenumbers/)
+
+
+### **Using the Provided Code**
+Our implementation was tested on a Linux machine with NVIDIA RTX 2080 GPUs with CUDA 10.2 and cuDNN 8.0.2.
+To reproduce our experiment results, please use the provided Anaconda environment configuration to replicate the environment used for our experiments.
+```shell
+# Run the following commands in `src/vae`
+conda create -f ./environment.yml
+conda activate cs395t
+
+# Train the VAE models
+python run.py compare_opts --lrs 1e-3,1e-4,1e-5
+
+# Produce result plots
+python run.py plot_loss_curves --lr 1e-3
+```
+
+### **Model Architecture**
+
+### **Experiment Definitions**
+
+### **Results**
+
+#### *Convergence Speed*
+
+![Convergence Speed.](./src/vae/plots/loss_curves..lr=0.001.pdf)  
+
+#### Final Performance
+
+
+# Reference
+**Any code that you borrow or other reference should be properly cited.**
+
+[1] Yuval Netzer, Tao Wang, Adam Coates, Alessandro Bissacco, Bo Wu, and Andrew Y. Ng. "Reading Digits in Natural Images with Unsupervised Feature Learning." _NIPS Workshop on Deep Learning and Unsupervised Feature Learning, 2011_. ([PDF](http://ufldl.stanford.edu/housenumbers/nips2011_housenumbers.pdf))
+
+[2] Kingma, Diederik P., and Max Welling. "Auto-encoding variational bayes." _arXiv preprint arXiv:1312.6114 (2013)_.  ([PDF](https://arxiv.org/abs/1312.6114))
