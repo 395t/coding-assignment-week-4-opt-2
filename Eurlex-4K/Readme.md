@@ -47,5 +47,3 @@ Here we compare the test Precision@1 for Adam and AdamW with different weight de
 Adam                                                            |  AdamW
 :--------------------------------------------------------------:|:---------------------------------------------------------------:
 <img src="Plots/Adam_weight_decay_ablation.png" height="300"/>  |  <img src="Plots/AdamW_weight_decay_ablation.png" height="300"/>
-
-## Summary
