@@ -81,20 +81,26 @@ Since the model we used was very deep and batch size was large, each epoch was v
 
 #### *Training Loss over Epochs for Each Optimizer*
 
-![Alt text](./Resources/LossVsStepSize.png?raw=true "Title")
+<p align="center"> <img src="Resources/LossVsStepSize.png" height="300"/> </p>
+<!-- <p align="center">Training loss vs Epochs for all optimizers</p> -->
+<!-- ![Alt text](./Resources/LossVsStepSize.png?raw=true "Title") -->
 
 The ResNet-50 model architecture was run for 8 epochs with a ``learning rate = 1e-2``, ``momentum = 0.9``, and ``weight decay = 1e-6`` as these seemed like appropriate baseline hyperparameter values. The optimizer that performed the worst was Adadelta which did not train at all under the given number of epochs. The same optimizer and model was run for 10 and 15 epochs with no significant drop in training loss or increase in test accuracy. Adagrad performed slightly better than Adadelta and show similar behavior where after 8 epochs where it began to overfit. However, unlike Adadelta, Adagrad was actually able to train the model. Lastly, Adam, AMSGrad, and AdamW all had almost the exact same training loss curve in the above graph with training loss values being extremely close to each other. Unlike the other 2 optimizers, Adam and its variants were able to properly converge from a high loss value to a relatively low loss value.
 
 It seems apparent that with the baseline hyperparameters, Adam, AMSGrad, and AdamW optimizers trained significantly better than Adagrad and Adadelta. This type of behavior is expected because Adam and its variants are more recent and address the flaws in Adagrad and Adadelta. Despite the similar loss curve, their test accuracies were not the same for Adam, AMSGrad, and AdamW.
 
 #### *Effect of Learning Rate on Performance*
-![Alt text](./Resources/LearningRateLinePlots.png?raw=true "Title")
+
+<p align="center"> <img src="Resources/LearningRateLinePlots.png" height="400"/> </p>
+<!-- <p align="center">Log learning rate vs final accuracy obtained for different optimizers</p> -->
+<!-- ![Alt text](./Resources/LearningRateLinePlots.png?raw=true "Title") -->
 
 For this experiment, ``momentum = 0.9`` and ``weight decay = 1e-6`` was fixed. The test accuracy for each optimizer at a different learning rate is plotted. The learning rates that were tested were ```1e-1, 1e-2, 1e-3, and 1e-4```. Like the previous experiment, Adadelta performed poorly regardless of the learning rate that was used. We even tried large learning rates such as 1 and 10 which led to similar low accuracies. Adagrad was relatively robust to learning rate, as learning rate inreased, the optimizer became more stable. However, it was not as stable as the Adam optimizers. Adam proved to be the least robust among the 3 because it seemed to have the largest dip in accuracy for the smallest learning rate. AMSGrad was slightly more robust than Adam and performed better than it overall. The most robust optimizer was AdamW whose test accuracy barely changed despite the changing learning rate. AdamW led to the best results in this experiment across all the optimizers. 
 
 #### *Effect of Momentum on Performance*
 
-![Alt text](./Resources/MomentumAccuraciesBarChart.png?raw=true "Title")
+<p align="center"> <img src="Resources/MomentumAccuraciesBarChart.png" height="300"/> </p>
+<!-- ![Alt text](./Resources/MomentumAccuraciesBarChart.png?raw=true "Title") -->
 
 This experiment was conducted with Adam, AMSGrad, and AdamW optimizers.
 
@@ -102,13 +108,21 @@ For this experiment, ```learning rate = 1e-2 and weight_decay = 1e-6``` was kept
 
 #### *Effect of Weight Decay on Adam and AdamW*
 
-![Alt text](./Resources/WeightDecayTable.PNG?raw=true "Title")
+Optimizer | 1e-6     | 1e-5    | 1e-4    | 1e-3
+:--------:|:--------:|--------:|--------:|--------:
+Adam      | 0.5257   | 0.5391  | 0.5445  | 0.5441
+AdamW     | 0.5498   | 0.5395  | 0.5451  | 0.5454
+<!-- ![Alt text](./Resources/WeightDecayTable.PNG?raw=true "Title") -->
 
 AdamW is supposed to implement weight decay more correctly than Adam, and thus we wanted to test how changing the weight decay would affect performance for both Adam and AdamW. The ```learning rate = 1e-2 and momentum = 0.9``` were held constant for this experiment. It was interesting to see that increasing weight decay led to better performance on Adam, whereas AdamW accuracy was relatively the same. Across all weight decay values, AdamW outperformed Adam with higher test accuracy values. The typical weight decay value is 1e-6 (this was our baseline value as well). At this setting, AdamW achieved a 2% accuracy increase over Adam. Overall, both were still relatively robust to change in weight decay, but AdamW constantly did better than Adam. 
 
 ### **Conclusion**
 
-![Alt text](./Resources/FinalAccuraciesTest.PNG?raw=true "Test Accuracy using Each Optimizer")
+Optimizer | Adam     | Adagrad    | AMSgrad    | Adadelta  | AdamW
+:--------:|:--------:|--------:|--------:|--------:|--------:
+Test Accuracy | 0.5257   | 0.3145  | 0.5507  | 0.005  | 0.5498
+
+<!-- ![Alt text](./Resources/FinalAccuraciesTest.PNG?raw=true "Test Accuracy using Each Optimizer") -->
 
 The above table shows test accuracies for hyperparameters at ``learning rate = 1e-2``, ``momentum = 0.9``, and ``weight decay = 1e-6``. Overall, the most robust optimizers seemed to Adam, AMSGrad, and AdamW. Their accuracies did not differ significantly despite changes to various hyperparameters. Among the three, AdamW clearly seemed to have slightly edged out the other optimizers with its consistently better performance and learning across all the experiments conducted. Using the Adadelta optimizer for this task led to very poor results. We tried to experiment around with the learning rate and number of epochs by increasing them, but the usage of this optimizer still ultimately led to very sub-optimal results with this task. The Adagrad optimizer did not lead to drastically low accuracies such as Adadelta, but it did not come close to the Adam optimizers. With this particular setting, AMSGrad and AdamW both had higher test accuracies compared to Adam. This type of result is to be expected because AMSGrad and AdamW were both intended to address problems with Adam. However, their accuracies were not exactly significantly better than Adam.
 
@@ -125,20 +139,22 @@ The purpose of this dataset and task is to demonstrate the effects of the optimi
 
 ### **Results**
 #### *Training Loss over Epochs for Each Optimizer*
-![Alt text](./Resources/general_test.png?raw=true "Title")
+<p align="center"> <img src="Resources/general_test.png" height="300"/> </p>
+<!-- ![Alt text](./Resources/general_test.png?raw=true "Title") -->
 
 As can be seen, all the models generally converge to the same results. That being said however, we generally see the adam variant model outperforming adagrad and adadelta with the amsgrad optimizer performing the best.
 
 #### *Effect of Learning Rate on Performance*
 For this test, we ran our model with each optimizer at 3 different learning rates. These learning rates were found by multiplying PyTorch's default learning rate for each respective optimizer times 10, 1, and 0.1.
 
-
-![Alt text](./Resources/learning_rate_tests.png?raw=true "Title")
+<p align="center"> <img src="Resources/learning_rate_tests.png" height="400"/> </p>
+<!-- ![Alt text](./Resources/learning_rate_tests.png?raw=true "Title") -->
 
 The results of these tests show the strength of PyTorch's default hyper parameters. We consistently see the default values outperfoms its neighboring variants with the single potential exception in adadelta in which the 0.1 hyper parameter ever so slightly outperforms the default value of 1. However,  when testing with other models, this was found to be a single exception since the learning rate of 1 would outperform 0.1 in all other tests, thus 1 was the only point graphed in other tests. For all other tests the default learning rate was used.
 
 #### *Effect of Momentum on Performance*
-![Alt text](./Resources/momentum_tests.png?raw=true "Title")
+<p align="center"> <img src="Resources/momentum_tests.png" height="200"/> </p>
+<!-- ![Alt text](./Resources/momentum_tests.png?raw=true "Title") -->
 
 When testing momentum we see that there is not much differences when using different values. The biggest diference is how long it takes to achieve the higher results the model can produce. We see 0.99 take the longest, and then 0, then 0.9 and finally 0.5 seems to provide the best results initially.
 
@@ -148,7 +164,11 @@ Weight decay values were chosen as decreasing value and also no weight decay.
 As previously mentioned, the effects of different weight decay values on adamw were not distinguishable and resulted in similar accuracies. However, when looking at these values within adam we see a more diverse difference. We surprisingly see that a value of 0.1 causes the model to never converge, although it is difficult to know if this is an outlier or if this is a result of a large weight decay. Additionally, we see that the model performs the best with either no weight decay or extremely small.
 
 ### **Conclusion**
-![Alt text](./Resources/results.PNG?raw=true "Title")
+
+Optimizer | Adagrad     | Adadelta    | Adam    | AdamW  | AMSgrad
+:--------:|:--------:|--------:|--------:|--------:|--------:
+Best Accuracy | 83.90   | 84.42  | 85.21  | 85.23  | 85.61
+<!-- ![Alt text](./Resources/results.PNG?raw=true "Title") -->
 
 In these test, we see that although the results are all generally extremely similar, certain optimizers are consistently out performing others. There could be several reasons this is the case. The first is that our model/problem is too simple. This could cause that any decent optimizer gets the job done. The other option is that these small differences caused by each optimizer is only an incremental improvement over the other, and this is indeed the actual differences that should be expected. When it comes down to robustness,  I would sort the optimizers from most robust to least as: adamw, amsgrad, adam, adadelta, adagrad. This is done with the following reasoning:
 * Adamw is more consistent than adam in momentum test and weight decay
@@ -294,20 +314,24 @@ Each model was trained for 150 epochs using batch size of 256.  We also computed
 
 Here we display a plot of training loss measured every 10 steps, smoothed out using moving average with window of 100 values.  
 
-![Training loss convergence plot.](./src/vae/plots/train_loss..lr=0.001.png)  
+<p align="center"> <img src="./src/vae/plots/train_loss..lr=0.001.png" height="400"/> </p>
+<!-- ![Training loss convergence plot.](./src/vae/plots/train_loss..lr=0.001.png)   -->
 
 As shown in the plot, Adam and AdamW optimizers achieve noticeably faster convergence in training loss.  This trend was consistent across various learning rates we considered: `1e-5, 5e-5, 1e-4, 5e-4, 1e-3`.
 
 We also notice that Adadelta, Adam and AdamW exhibit relatively stable training compared to the other two (Adagrad, Amsgrad) with much less fluctuations in the loss curve. 
 As expected, however, training stability improves when using a smaller learning rate, e.g. `lr=0.0001` as shown below:
 
-![Training loss convergence plot for smaller learning rate.](./src/vae/plots/train_loss..lr=0.0001.png)  
+
+<p align="center"> <img src="./src/vae/plots/train_loss..lr=0.0001.png" height="400"/> </p>
+<!-- ![Training loss convergence plot for smaller learning rate.](./src/vae/plots/train_loss..lr=0.0001.png)   -->
 
 #### **Test Set Performance**
 
 We also measured the test set performance of the model after each epoch of training, again smoothed using window size of 10. We do not observe overfitting, and the relative order of the optimizer performance was consistent with the training loss plot from above.
 
-![Test set loss plot.](./src/vae/plots/test_loss..lr=0.001.png)  
+<p align="center"> <img src="./src/vae/plots/test_loss..lr=0.001.png" height="400"/> </p>
+<!-- ![Test set loss plot.](./src/vae/plots/test_loss..lr=0.001.png)   -->
 
 #### **Effect of Learning Rate**
 
