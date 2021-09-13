@@ -1,5 +1,27 @@
 # Optimizers - Week 4 Group 2
 
+This week's papers are about optimizers, namely
+* **Adagrad** - [Adaptive Subgradient Methods for Online Learning and Stochastic Optimization](https://jmlr.org/papers/v12/duchi11a.html), Duchi, Hazan, Singer; 2011
+* **Adadelta** - [ADADELTA: An Adaptive Learning Rate Method](https://arxiv.org/abs/1212.5701), Zeiler; 2012
+* **Adam** - [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980), Kingma, Ba; 2014
+* **AMSGrad** - [On the Convergence of Adam and Beyond](https://arxiv.org/abs/1904.09237), Reddi, Kale, Kumar; 2019
+* **AdamW** - [Decoupled Weight Decay Regularization](https://arxiv.org/abs/1711.05101), Loshchilov, Hutter; 2017
+We compared their performance based on four different datasets/three different tasks:
+### Image Classification:
+* Tiny ImageNet
+* CIFAR-10
+### Text Classification:
+* EURLex-4K
+### Generative Modeling:
+* Street View House Numbers (SVHN)
+
+All optimizers are already implemented in PyTorch:
+* **Adagrad**: `torch.optim.Adagrad()`
+* **Adadelta**: `torch.optim.Adadelta()`
+* **Adam**: `torch.optim.Adam(amsgrad=False)`
+* **AMSGrad**: `torch.optim.Adam(amsgrad=True)`
+* **AdamW**: `torch.optim.AdamW()`
+
 ## Tiny ImageNet Experiments
 
 ### **Dataset**
@@ -31,7 +53,7 @@ Use ResNet-50 for Image Classification.
 
 ### **Model Architecture**
 
-We decided to use a pre-defined Residual Network for this image classification task. Specifically, we used a ResNet-50 architecture that was loaded from ``torchvision.models``. This model is predominantly made up of convultional blocks, skip connections, and a ReLU non-linearity totalling to 50 layers. There are other variants of this architecture that have fewer or more layers such as ResNet-34 or ResNet-101 respectively. For our purposes, the final linear layer for ResNet-50 was changed to have 200 out_features as opposed to the default 1000 to fit the needs of the dataset. 
+We decided to use a pre-defined Residual Network for this image classification task. Specifically, we used a ResNet-50 architecture that was loaded from ``torchvision.models``. This model is predominantly made up of convoltional blocks, skip connections, and a ReLU non-linearity totalling to 50 layers. There are other variants of this architecture that have fewer or more layers such as ResNet-34 or ResNet-101 respectively. For our purposes, the final linear layer for ResNet-50 was changed to have 200 out_features as opposed to the default 1000 to fit the needs of the dataset. 
 
 **Source** : [Deep Residual Learning for Image Recognition](https://arxiv.org/pdf/1512.03385.pdf)
 
@@ -60,7 +82,7 @@ Since the model we used was very deep and batch size was large, each epoch was v
 
 ![Alt text](./Resources/LossVsStepSize.png?raw=true "Title")
 
-The ResNet-50 model architecture was run for 8 epochs with a ``learning rate = 1e-2``, ``momentum = 0.9``, and ``weight decay = 1e-6`` as these seemed like appropriate baseline hyperparameter values. The optimizer that performed the worst was Adadelta which did not train at all under the given number of epochs. The same optimizer and model was run for 10 and 15 epochs with no significant drop in training loss or increase in test accuracy. Adagrad performed slightly better than Adadelta and show similar behavior where after 8 epochs where it began to overfit. However, unlike Adadelta, Adagrad was actually able to train the model. Lastly, Adam, AMSGrtad, and AdamW all had almost the exact same training loss curve in the above graph with training loss values being extremely close to each other. Unlike the other 2 optimizers, Adam and its variants were able to properly converge from a high loss value to a relatively low loss value.
+The ResNet-50 model architecture was run for 8 epochs with a ``learning rate = 1e-2``, ``momentum = 0.9``, and ``weight decay = 1e-6`` as these seemed like appropriate baseline hyperparameter values. The optimizer that performed the worst was Adadelta which did not train at all under the given number of epochs. The same optimizer and model was run for 10 and 15 epochs with no significant drop in training loss or increase in test accuracy. Adagrad performed slightly better than Adadelta and show similar behavior where after 8 epochs where it began to overfit. However, unlike Adadelta, Adagrad was actually able to train the model. Lastly, Adam, AMSGrad, and AdamW all had almost the exact same training loss curve in the above graph with training loss values being extremely close to each other. Unlike the other 2 optimizers, Adam and its variants were able to properly converge from a high loss value to a relatively low loss value.
 
 It seems apparent that with the baseline hyperparameters, Adam, AMSGrad, and AdamW optimizers trained significantly better than Adagrad and Adadelta. This type of behavior is expected because Adam and its variants are more recent and address the flaws in Adagrad and Adadelta. Despite the similar loss curve, their test accuracies were not the same for Adam, AMSGrad, and AdamW.
 
@@ -89,16 +111,16 @@ AdamW is supposed to implement weight decay more correctly than Adam, and thus w
 
 The above table shows test accuracies for hyperparameters at ``learning rate = 1e-2``, ``momentum = 0.9``, and ``weight decay = 1e-6``. Overall, the most robust optimizers seemed to Adam, AMSGrad, and AdamW. Their accuracies did not differ significantly despite changes to various hyperparameters. Among the three, AdamW clearly seemed to have slightly edged out the other optimizers with its consistently better performance and learning across all the experiments conducted. Using the Adadelta optimizer for this task led to very poor results. We tried to experiment around with the learning rate and number of epochs by increasing them, but the usage of this optimizer still ultimately led to very sub-optimal results with this task. The Adagrad optimizer did not lead to drastically low accuracies such as Adadelta, but it did not come close to the Adam optimizers. With this particular setting, AMSGrad and AdamW both had higher test accuracies compared to Adam. This type of result is to be expected because AMSGrad and AdamW were both intended to address problems with Adam. However, their accuracies were not exactly significantly better than Adam.
 
-The clear-winners in the Tiny ImageNet experiments were the Adam Optimizers. The difference in their accuracies is not too significant from each other which makes it difficult to pick a clear-winner. However, if we had to choose, we would say it is AdamW due to its high performance and overall robustness to hyperparameters such as learning rate, momentum, and weight decay.
+The clear winners in the Tiny ImageNet experiments were the Adam Optimizers. The difference in their accuracies is not too significant from each other which makes it difficult to pick a clear winner. However, if we had to choose, we would say it is AdamW due to its high performance and overall robustness to hyperparameters such as learning rate, momentum, and weight decay.
 
 ----
-## CIFAR-10 CNN
+## CIFAR-10
 
 ### Dataset
 The CIFAR-10 Dataset is a well balanced dataset of 10 classes with small 32 x 32 colored images. This data was provided through the torchvision datasets library [1].
 
 ### **Task and Model**
-The intention to this dataset and task is to demonstrate the effects of the optimizers on a more straight forward model and dataset. Initially, an extremely simple model was used which yielded accuracies between 60-65. However, as these results were found unsatisfactory, we decided to use a model inspired by vgg16 [2]. Code backbone was provided through Kaggle guide [3]. Due to confidence gained on model default parameters through the testing on learning rate (explained later), any hyper parameter not tested was left as the default provided in pytorch [4]. The model was initially tested for 20 epochs but was found to converge within 10 epochs, so all tests are done with either 8 or 10 epochs.
+The purpose of this dataset and task is to demonstrate the effects of the optimizers on a more straight forward model and dataset. Initially, an extremely simple model was used which yielded accuracies between 60-65. However, as these results were found unsatisfactory, we decided to use a model inspired by vgg16 [2]. Code backbone was provided through Kaggle guide [3]. Due to confidence gained on model default parameters through the testing on learning rate (explained later), any hyperparameter not tested was left as the default provided in pytorch [4]. The model was initially tested for 20 epochs but was found to converge within 10 epochs, so all tests are done with either 8 or 10 epochs.
 
 ### **Results**
 #### *Training Loss over Epochs for Each Optimizer*
@@ -143,6 +165,63 @@ In these test, we see that although the results are all generally extremely simi
 [4] https://pytorch.org/docs/stable/optim.html
 
 ----
+
+# Multi-Label Text Classification on EURLex-4K
+## TL;DR
+* Fine-tuning BERT on large output-space is brittle and seems to work only in some sweetspot of hyperparameters
+* Adam and its variants perform the best with learning rate around ```1e-4```
+* AdamW works better than Adam when using weight decay during training
+
+## Running the Code
+``` bash
+pip install -r requirements.txt
+python eurlex-train.py
+```
+
+## Setup
+### Dataset
+For this experiment we used the EURLex-4K dataset which is a widely used [eXtreme Multi-label classification](http://manikvarma.org/downloads/XC/XMLRepository.html) dataset. It contains a collection of documents about European Union law and each document is labelled with multiple tags from a set of about 4000 tags. The dataset was downloaded from [here](https://drive.google.com/open?id=1iPGbr5-z2LogtMFG1rwwekV_aTubvAb2). Following are some statistics of the dataset : 
+
+Num training points | Num labels | Num test points | Avg training points per label | Avg labels per training point
+:------------------:|:------------------:|:------------------:|:------------------:|:------------------:
+15449 | 3801 | 3865 | 21.64 | 5.32
+
+### Model and Training
+The model consists of a [`DistilBERT`](https://huggingface.co/distilbert-base-uncased) feature encoder followed by a `dropout` layer and a `768x3801` fully connected linear layer. The Model is trained on the widely used Binary Cross Entropy Loss (`nn.BCEWithLogitsLoss` in PyTorch)
+
+The learning curves along with the test Precision@1 is compared for following optimizers when trained for 25 epochs
+* [Adagrad](https://jmlr.org/papers/v12/duchi11a.html)
+* [Adadelta](https://arxiv.org/abs/1212.5701)
+* [Adam](https://arxiv.org/abs/1412.6980)
+* [Adam with AMSgrad](https://arxiv.org/abs/1904.09237)
+* [AdamW](https://arxiv.org/abs/1711.05101)
+
+## Experiments
+### Best Results Comparison
+Here we plot the best results obtained for each optimizer. Adam and AdamW perform the best and are comparable in terms of the final numbers obtained while Adam with AMSgrad performs slightly inferior to them. Adagrad and Adadelta fail to optimize the model on this task.
+
+<p align="center"> <img src="src/Eurlex-4K/Plots/Optimizer_Comparison.png" height="300"/> </p>
+<p align = "center"> Fig.1 - Adam and its variants perform the best whereas Adadelta and Adagrad fail to train</p>
+
+### Comparison w.r.t Learning Rate
+Here we compare the loss curves along with the test Precision@1 for all optimizers with different learning rates. For each optimizer we multiply its default learning rate with a multiplicative factor from `[10, 1, 0.1, 0.01, 0.001]` and then choose that learning rate for a particular run. Default learning rate for Adam and it's variants is `0.001`, for Adadelta is `0.01` and for Adagrad is `1`. Adadelta and Adagrad fail to train across all tried learning rates but Adam and it's variants manage to train the model at `LR=1e-4`. 
+
+Optimizer           | Loss                                                              |  Test Precision@1
+:------------------:|:-----------------------------------------------------------------:|:----------------------------------------------------------------:
+Adagrad             | <img src="src/Eurlex-4K/Plots/Adagrad_LR_vs_Loss.png" height="300"/>            |  <img src="src/Eurlex-4K/Plots/Adagrad_LR_vs_P@1.png" height="300"/>
+Adadelta            | <img src="src/Eurlex-4K/Plots/Adadelta_LR_vs_Loss.png" height="300"/>           |  <img src="src/Eurlex-4K/Plots/Adadelta_LR_vs_P@1.png" height="300"/>
+Adam                | <img src="src/Eurlex-4K/Plots/Adam_LR_vs_Loss.png" height="300"/>               |  <img src="src/Eurlex-4K/Plots/Adam_LR_vs_P@1.png" height="300"/>
+Adam with AMSgrad   | <img src="src/Eurlex-4K/Plots/Adam_with_AMSgrad_LR_vs_Loss.png" height="300"/>  |  <img src="src/Eurlex-4K/Plots/Adam_with_AMSgrad_LR_vs_P@1.png" height="300"/>
+AdamW               | <img src="src/Eurlex-4K/Plots/AdamW_LR_vs_Loss.png" height="300"/>              |  <img src="src/Eurlex-4K/Plots/AdamW_LR_vs_P@1.png" height="300"/>
+
+### Comparison of Adam vs AdamW w.r.t. Weight Decay
+Here we compare the test Precision@1 for Adam and AdamW with different weight decays. For the same learning rate, we observe that Adam fails to train for non-zero weight decay while AdamW doesn't suffer from any such problem. It's worth noting that weight decay seems to play no significant effect on the final results obtained which might be happening because of already present heavy regularization from dropout (both in DistilBERT and just before fully connected linear layer).
+
+Adam                                                            |  AdamW
+:--------------------------------------------------------------:|:---------------------------------------------------------------:
+<img src="src/Eurlex-4K/Plots/Adam_weight_decay_ablation.png" height="300"/>  |  <img src="src/Eurlex-4K/Plots/AdamW_weight_decay_ablation.png" height="300"/>
+
+
 ## VAE Experiments
 
 ### **Task and Dataset**
@@ -264,3 +343,6 @@ Samples:
 [2] Kingma, Diederik P., and Max Welling. "Auto-encoding variational bayes." _arXiv preprint arXiv:1312.6114 (2013)_.  ([PDF](https://arxiv.org/abs/1312.6114))
 
 [3] Rui Shu. "DENSITY ESTIMATION: VARIATIONAL AUTOENCODERS." _http://ruishu.io/2018/03/14/vae/_. ([Webpage](http://ruishu.io/2018/03/14/vae/))
+
+## Conclusion
+Overall, the clear winners of this experiment are the Adam variants. Adagrad and Adadelta both have trouble optimizing our models at all in some cases. AdamW seems to have a slight lead over AMSGrad and Adam, with the other two non-Adam optimizers falling way behind.
