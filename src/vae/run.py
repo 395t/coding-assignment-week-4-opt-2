@@ -1,3 +1,4 @@
+import functools
 import glob
 import os
 import shutil
@@ -7,7 +8,7 @@ import traceback
 import matplotlib; matplotlib.use('Agg')
 import matplotlib.pyplot as plt; plt.rc('text', usetex=True)
 plt.rcParams['text.latex.preamble'] = [r'\usepackage{bm}']
-import seaborn as sns; sns.set(context='paper', style='whitegrid', font_scale=2.0, font='Times New Roman')
+import seaborn as sns; sns.set(context='paper', style='whitegrid', font_scale=1.5, font='Times New Roman')
 
 import fire
 import numpy as np
@@ -17,6 +18,14 @@ from lib.utils import HParams, OPT_NAMES
 
 
 _MARKERS = ['o', '^', 's', 'x', '+']
+
+
+_OPT_LABELS = {
+    'adagrad': 'Adagrad',
+    'adadelta': 'Adadelta',
+    'adam': 'Adam',
+    'amsgrad': 'Amsgrad',
+    'adamw': 'AdamW'}
 
 
 def compare_opts(lrs=None):
@@ -50,56 +59,97 @@ def compare_opts(lrs=None):
                 print(f'[compare_opts] Unknown error encountered for lr={hparams.lr} optimizer={hparams.opt_name}')
 
 
-def plot(fn, results, smooth=None, skip_first=None, set_kwargs=None):
+def plot(fn_prefix, results, smooth=None, skip_first=None, set_kwargs=None):
     fig = plt.figure(1, figsize=(6, 4))
     ax = fig.add_subplot()
-    for i, label in enumerate(results):
-        marker = _MARKERS[i]
-        result = results[label]
+    for i, name in enumerate(results):
+        result = results[name]
         x, y = result['x'], result['y']
         if smooth is not None:
             y[smooth-1:] = np.convolve(y, np.ones(smooth), 'valid') / smooth
         if skip_first is not None:
             x = x[skip_first:]
             y = y[skip_first:]
-        ax.plot(x, y, label=label)
+        ax.plot(x, y, label=_OPT_LABELS[name])
     ax.grid(True, axis='y', linestyle='--', linewidth=1)
     ax.grid(True, axis='x', linestyle='--', linewidth=1)
     ax.set_title(f'Training Loss')
     ax.set_xlabel('Steps')
-    ax.set_ylabel('Loss (ELBO)')
+    ax.set_ylabel('Negative ELBO')
     if set_kwargs is not None:
         ax.set(**set_kwargs)
-    ax.legend()
-    fig.savefig(fn, dpi=300, bbox_inches='tight')
+    ax.legend(loc='upper right')
+    fig.savefig(fn_prefix+'.pdf', dpi=200, bbox_inches='tight')
+    fig.savefig(fn_prefix+'.png', dpi=200, bbox_inches='tight')
     plt.close(fig)
 
 
-def plot_loss_curves(lr):
-    results = {}
-    for opt_name in OPT_NAMES:
-        out_dir = f'results/compare_opts/lr={lr}/{opt_name}'
-        assert os.path.exists(os.path.join(out_dir, 'FINISHED'))
+def plot_loss_curves(split, lrs):
+    assert split in ('train', 'test')
+    for lr in lrs:
+        results = {}
+        for opt_name in OPT_NAMES:
+            out_dir = f'results/compare_opts/lr={lr}/{opt_name}'
+            if not os.path.exists(os.path.join(out_dir, 'FINISHED')):
+                print(f'Skipping lr={lr} due to missing runs.')
+                continue
 
-        fn = sorted(glob.glob(os.path.join(out_dir, 'ckpt_*')))[-1]
-        print(f'Processing {fn}')
-        stats = torch.load(fn)['stats']
-        results[opt_name] = {
-            'x': 10 * np.arange(1, len(stats['loss']) + 1),
-            'y': stats['loss'],
-        }
+            fn = sorted(glob.glob(os.path.join(out_dir, 'ckpt_*')))[-1]
+            print(f'Processing {fn}')
+            stats = torch.load(fn)['stats']
+            if split == 'train':
+                results[opt_name] = {
+                    'x': 10 * np.arange(1, len(stats['loss']) + 1),
+                    'y': stats['loss'],
+                }
+            elif split == 'test':
+                results[opt_name] = {
+                    'x': 10 * np.arange(1, len(stats['eval_loss']) + 1),
+                    'y': np.array(stats['eval_loss']),
+                }
 
-    plot(f'plots/loss_curves..lr={lr}.pdf',
-         results,
-         smooth=100,
-         skip_first=100,
-         set_kwargs = {
-             'ylim': (40, 150)
-         })
+        plot(f'plots/{split}_loss..lr={lr}',
+            results,
+            smooth=100 if split == 'train' else 10,
+            skip_first=100 if split == 'train' else 10,
+            set_kwargs={
+                'ylim': (40, 120),
+                'title': f'Training Loss (lr={lr})' if split == 'train' else f'Test Loss (lr={lr})',
+                'xlabel': 'Step' if split == 'train' else 'Epoch',
+                'ylabel': 'Negative ELBO',
+            })
+
+def print_final_bpds(lrs):
+    for lr in lrs:
+        results = {}
+        for opt_name in OPT_NAMES:
+            out_dir = f'results/compare_opts/lr={lr}/{opt_name}'
+            if not os.path.exists(os.path.join(out_dir, 'FINISHED')):
+                print(f'Skipping lr={lr} due to missing runs.')
+                continue
+
+            fn = sorted(glob.glob(os.path.join(out_dir, 'ckpt_*')))[-1]
+            print(f'Processing {fn}')
+            stats = torch.load(fn)['stats']
+            results[opt_name] = {
+                'x': 10 * np.arange(1, len(stats['loss']) + 1),
+                'y': stats['loss'],
+            }
+
+        plot(f'plots/loss_curves..lr={lr}',
+            results,
+            smooth=100,
+            skip_first=100,
+            set_kwargs = {
+                'ylim': (40, 200)
+            })
+
 
 
 if __name__ == '__main__':
     fire.Fire({
         'compare_opts': compare_opts,
-        'plot_loss_curves': plot_loss_curves,
+        'plot_train_loss': functools.partial(plot_loss_curves, 'train'),
+        'plot_test_loss': functools.partial(plot_loss_curves, 'test'),
+        'print_final_bpds': print_final_bpds,
     })

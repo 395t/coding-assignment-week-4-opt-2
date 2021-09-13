@@ -104,34 +104,81 @@ The SVHN dataset is a moderately complex dataset with 32x32 color images of hous
 ![Samples from the SVHN dataset.](http://ufldl.stanford.edu/housenumbers/32x32eg.png)  
 **Source**: [The Street View House Numbers (SVHN) Dataset](http://ufldl.stanford.edu/housenumbers/)
 
-
 ### **Using the Provided Code**
 Our implementation was tested on a Linux machine with NVIDIA RTX 2080 GPUs with CUDA 10.2 and cuDNN 8.0.2.
 To reproduce our experiment results, please use the provided Anaconda environment configuration to replicate the environment used for our experiments.
-```shell
+```
 # Run the following commands in `src/vae`
 conda create -f ./environment.yml
 conda activate cs395t
 
 # Train the VAE models
-python run.py compare_opts --lrs 1e-3,1e-4,1e-5
+python run.py compare_opts --lrs 5e-5,1e-5,5e-5,1e-4,5e-4,1e-3
 
 # Produce result plots
-python run.py plot_loss_curves --lr 1e-3
+python run.py plot_train_loss --lrs 5e-5,1e-5,5e-5,1e-4,5e-4,1e-3
+python run.py plot_test_loss --lrs 5e-5,1e-5,5e-5,1e-4,5e-4,1e-3
 ```
 
 ### **Model Architecture**
+We used a modified version of a simple convolutional VAE architecture by Rui Shu [3].
+In the architecture definition below, the parts inside `[...]` represent the shape after each layer.
 
-### **Experiment Definitions**
+Encoder architecture:  
+```
+Input [32x32x3]
+    -> Conv 1x1 [32 x 32 x 32 ] -> BatchNorm -> Swish
+    -> Conv 3x3 [16 x 16 x 32 ] -> BatchNorm -> Swish
+    -> Conv 3x3 [8  x 8  x 64 ] -> BatchNorm -> Swish
+    -> Conv 3x3 [4  x 4  x 128] -> BatchNorm -> Swish
+    -> Linear   [1024] -> BatchNorm1d -> Swish
+    -> Linear   [40]
+```
 
-### **Results**
+Decoder architecture:  
+```
+Input [20]
+    -> Linear             [4  x 4  x 512] -> BatchNorm -> Swish
+    -> TransposedConv 4x4 [8  x 8  x 128] -> BatchNorm -> Swish
+    -> TransposedConv 4x4 [16 x 16 x 64 ] -> BatchNorm -> Swish
+    -> TransposedConv 4x4 [32 x 32 x 32 ] -> BatchNorm -> Swish
+    -> Conv 1x1           [32 x 32 x 3  ] -> Tanh
+```
 
-#### *Convergence Speed*
+The output of the encoder is split into two 20-dimension vectors and used as the mean/variance of the Gaussian variational posterior.  The output of the decoder is also used as the mean of a Gaussian with fixed identity covariance matrix.
 
-![Convergence Speed.](./src/vae/plots/loss_curves..lr=0.001.pdf)  
+### **Experiment Setup**
+We trained a VAE for each `(optimizer, learning rate)` pair to compare various aspects of the optimizers considered.  As with other experiments, we used the following optimizers:
+* Adagrad: [Adaptive Subgradient Methods for Online Learning and Stochastic Optimization](https://jmlr.org/papers/v12/duchi11a.html), Duchi, Hazan, Singer; 2011
+* Adadelta: [ADADELTA: An Adaptive Learning Rate Method](https://arxiv.org/abs/1212.5701), Zeiler; 2012
+* Adam: [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980), Kingma, Ba; 2014
+* AdamW: [Decoupled Weight Decay Regularization](https://arxiv.org/abs/1711.05101), Loshchilov, Hutter; 2017
+* AMSGrad: [On the Convergence of Adam and Beyond](https://arxiv.org/abs/1904.09237), Reddi, Kale, Kumar; 2019
 
-#### Final Performance
+Each model was trained for 150 epochs using batch size of 256.  We also computed the average loss over the test set after each epoch to see if the model starts is overfitting.  In our results below, we focus on the following metric:
+* Negative ELBO: This is the training objective we minimize during training.  It is an upper bound to the negative log-likelihood of the model over the dataset and is the main metric used in the VAE literature to compare different models.
 
+### **Experiment Results**
+
+#### **Training Convergence**
+
+Here we display a plot of training loss measured every 10 steps, smoothed out using moving average with window of 100 values.  
+![Training loss convergence plot.](./src/vae/plots/train_loss..lr=0.001.png)  
+
+As shown in the plot, Adam and AdamW optimizers achieve noticeably faster convergence in training loss.  This trend was consistent across various learning rates we considered: `0.00005, 0.0001, 0.0005, 0.001`.
+
+We also notice that Adadelta, Adam and AdamW exhibit relatively stable training compared to the other two (Adagrad, Amsgrad) with much less fluctuations in the loss curve. 
+As expected, however, training stability improves when using a smaller learning rate, e.g. `lr=0.0001` as shown below:
+![Training loss convergence plot for smaller learning rate.](./src/vae/plots/train_loss..lr=0.0001.png)  
+
+#### **Test Set Performance**
+
+We also measured the test set performance of the model after each epoch of training, again smoothed using window size of 10. We do not observe overfitting, and the relative order of the optimizer performance was consistent with the training loss plot from above.
+![Test set loss plot.](./src/vae/plots/test_loss..lr=0.001.png)  
+
+#### **Effect of Learning Rate**
+
+TODO
 
 # Reference
 **Any code that you borrow or other reference should be properly cited.**
@@ -139,3 +186,5 @@ python run.py plot_loss_curves --lr 1e-3
 [1] Yuval Netzer, Tao Wang, Adam Coates, Alessandro Bissacco, Bo Wu, and Andrew Y. Ng. "Reading Digits in Natural Images with Unsupervised Feature Learning." _NIPS Workshop on Deep Learning and Unsupervised Feature Learning, 2011_. ([PDF](http://ufldl.stanford.edu/housenumbers/nips2011_housenumbers.pdf))
 
 [2] Kingma, Diederik P., and Max Welling. "Auto-encoding variational bayes." _arXiv preprint arXiv:1312.6114 (2013)_.  ([PDF](https://arxiv.org/abs/1312.6114))
+
+[3] Rui Shu. "DENSITY ESTIMATION: VARIATIONAL AUTOENCODERS." _http://ruishu.io/2018/03/14/vae/_. ([Webpage](http://ruishu.io/2018/03/14/vae/))
