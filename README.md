@@ -128,7 +128,7 @@ As previously mentioned, the effects of different weight decay values on adamw w
 ![Alt text](./Resources/results.PNG?raw=true "Title")
 
 In these test, we see that although the results are all generally extremely similar, certain optimizers are consistently out performing others. There could be several reasons this is the case. The first is that our model/problem is too simple. This could cause that any decent optimizer gets the job done. The other option is that these small differences caused by each optimizer is only an incremental improvement over the other, and this is indeed the actual differences that should be expected. When it comes down to robustness,  I would sort the optimizers from most robust to least as: adamw, amsgrad, adam, adadelta, adagrad. This is done with the following reasoning:
-* Adamw is more consistent than adam in momentum test and Weight Decay
+* Adamw is more consistent than adam in momentum test and weight decay
 * Adagrad has the most varied LR curve
 * Adadelta is the only graph that doesn't have two paired lines in the LR graph
 * Amsgrad does as well  as adamw in momentum test
