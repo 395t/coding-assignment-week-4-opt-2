@@ -79,8 +79,8 @@ def plot(fn_prefix, results, smooth=None, skip_first=None, set_kwargs=None):
     if set_kwargs is not None:
         ax.set(**set_kwargs)
     ax.legend(loc='upper right')
-    fig.savefig(fn_prefix+'.pdf', dpi=200, bbox_inches='tight')
-    fig.savefig(fn_prefix+'.png', dpi=200, bbox_inches='tight')
+    fig.savefig(fn_prefix+'.pdf', dpi=150, bbox_inches='tight')
+    fig.savefig(fn_prefix+'.png', dpi=150, bbox_inches='tight')
     plt.close(fig)
 
 
