@@ -113,7 +113,7 @@ def plot_loss_curves(split, lrs):
             smooth=100 if split == 'train' else 10,
             skip_first=100 if split == 'train' else 10,
             set_kwargs={
-                'ylim': (40, 120),
+                'ylim': (40, 120) if split == 'train' else (50, 160),
                 'title': f'Training Loss (lr={lr})' if split == 'train' else f'Test Loss (lr={lr})',
                 'xlabel': 'Step' if split == 'train' else 'Epoch',
                 'ylabel': 'Negative ELBO',
