@@ -102,6 +102,7 @@ The intention to this dataset and task is to demostrate the effects of an optimi
 
 ### **Results**
 #### *Training Loss over Epochs for Each Optimizer*
+![Alt text](./Resources/general_test.png?raw=true "Title")
 As can be seen, all the models generally converge to the same results. That being said however, we generally see the adam variant model outperforming adagrad and adadelta with the amsgrad optimizer performing the best.
 
 
@@ -109,9 +110,13 @@ As can be seen, all the models generally converge to the same results. That bein
 #### *Effect of Learning Rate on Performance*
 For this test, we ran our model with each optimizer at 3 different learning rates. These learning rates were found by multiplying PyTorch's default learning rate for each respective optimzer times 10, 1, and 0.1.
 
+
+![Alt text](./Resources/learning_rate_tests.png?raw=true "Title")
+
 The results of these tests show the strength of PyTorche's default hyper parameters. We consistently see the default values outperfom its neighboring variants with the single potential exception in adadelta in which the 0.1 hyper parameter ever  so slightly outperforms the defaul value of 1. However,  when testing with other models, this was found to be a single exception since the learning rate of 1 would outperform 0.1 in all other tests, thus 1 was the only point graphed. For all other tests the default learning rate was used.
 
 #### *Effect of Momentum on Performance*
+![Alt text](./Resources/momentum_tests.png?raw=true "Title")
 When testing with momentum we see that there is not much differences in the result. The biggest diference is how long it takes to achieve the higher results the model can produce. We see 0.99 take the longest, and then 0, then 0.9 and finally 0.5 seems to provide the best results initially.
 
 #### *Effect of Weight Decay on Adam and AdamW*
@@ -119,10 +124,20 @@ Weight decay values were chosen as decreasing value and also no weight decay.
 
 As previously mentioned, the effects of different weight decay values on adamw were not distinguishable and resulted in similar Accuracies. However, when looking at these values within adam we see a more diverse difference. We suprisingly see that a value of 0.1 vauses the model to never converge, although it is difficult to know if this is an outlier or if this is a result of a large weight decay. Additionally we see that the model performs the best with either no weight decay or extremely small.
 
+### **Conclusion**
+![Alt text](./Resources/results.PNG?raw=true "Title")
+In these test, we see that although the results are all generally extremely similar, certain optimizers are consistently out performing others. There could be several reasons this is the case. The first is that our model/problem is too simple. This could cause that any decent optimizer gets the job done. The other option is that these small differences caused by each optimizer is only an incremental improvemnt over the other, and this is indeed the actual differences that should be expected. When it comes down to robustness,  I would sort the optimizers from most robust to least as: adamw, amsgrad, adam, adadelta, adagrad. This is done with the following reasoning:
+* Adamw is more consistent than adam in momentum test and Weight Decay
+* Adagrad has the most varied LR curve
+* Adadelta is the only graph that doesnt have to paierd lines in the LR graph
+* Amsgrad does as well  as adamw in momentum test
+
 [1] https://pytorch.org/vision/stable/datasets.html#cifar
 [2] https://github.com/kuangliu/pytorch-cifar/blob/master/models/vgg.py
 [3] https://www.kaggle.com/vikasbhadoria/cifar10-high-accuracy-model-build-on-pytorch
 [4] https://pytorch.org/docs/stable/optim.html
+
+----
 ## VAE Experiments
 
 ### **Task and Dataset**
