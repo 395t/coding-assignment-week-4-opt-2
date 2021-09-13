@@ -6,6 +6,7 @@ This week's papers are about optimizers, namely
 * **Adam** - [Adam: A Method for Stochastic Optimization](https://arxiv.org/abs/1412.6980), Kingma, Ba; 2014
 * **AMSGrad** - [On the Convergence of Adam and Beyond](https://arxiv.org/abs/1904.09237), Reddi, Kale, Kumar; 2019
 * **AdamW** - [Decoupled Weight Decay Regularization](https://arxiv.org/abs/1711.05101), Loshchilov, Hutter; 2017
+
 We compared their performance based on four different datasets/three different tasks:
 ### Image Classification:
 * Tiny ImageNet
