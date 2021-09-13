@@ -163,17 +163,20 @@ Each model was trained for 150 epochs using batch size of 256.  We also computed
 #### **Training Convergence**
 
 Here we display a plot of training loss measured every 10 steps, smoothed out using moving average with window of 100 values.  
+
 ![Training loss convergence plot.](./src/vae/plots/train_loss..lr=0.001.png)  
 
 As shown in the plot, Adam and AdamW optimizers achieve noticeably faster convergence in training loss.  This trend was consistent across various learning rates we considered: `0.00005, 0.0001, 0.0005, 0.001`.
 
 We also notice that Adadelta, Adam and AdamW exhibit relatively stable training compared to the other two (Adagrad, Amsgrad) with much less fluctuations in the loss curve. 
 As expected, however, training stability improves when using a smaller learning rate, e.g. `lr=0.0001` as shown below:
+
 ![Training loss convergence plot for smaller learning rate.](./src/vae/plots/train_loss..lr=0.0001.png)  
 
 #### **Test Set Performance**
 
 We also measured the test set performance of the model after each epoch of training, again smoothed using window size of 10. We do not observe overfitting, and the relative order of the optimizer performance was consistent with the training loss plot from above.
+
 ![Test set loss plot.](./src/vae/plots/test_loss..lr=0.001.png)  
 
 #### **Effect of Learning Rate**
