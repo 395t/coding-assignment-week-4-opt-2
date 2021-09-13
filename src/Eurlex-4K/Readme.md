@@ -32,7 +32,7 @@ The learning curves along with the test Precision@1 is compared for following op
 ### Best Results Comparison
 Here we plot the best results obtained for each optimizer. Adam and AdamW perform the best and are comparable in terms of the final numbers obtained while Adam with AMSgrad performs slightly inferior to them. Adagrad and Adadelta fail to optimize the model on this task.
 
-<p align="center"> <img src="src/Eurlex-4K/Plots/Optimizer_Comparison.png" height="300"/> </p>
+<p align="center"> <img src="Plots/Optimizer_Comparison.png" height="300"/> </p>
 <p align = "center"> Fig.1 - Adam and its variants perform the best whereas Adadelta and Adagrad fail to train</p>
 
 ### Comparison w.r.t Learning Rate
@@ -40,18 +40,18 @@ Here we compare the loss curves along with the test Precision@1 for all optimize
 
 Optimizer           | Loss                                                              |  Test Precision@1
 :------------------:|:-----------------------------------------------------------------:|:----------------------------------------------------------------:
-Adagrad             | <img src="src/Eurlex-4K/Plots/Adagrad_LR_vs_Loss.png" height="300"/>            |  <img src="src/Eurlex-4K/Plots/Adagrad_LR_vs_P@1.png" height="300"/>
-Adadelta            | <img src="src/Eurlex-4K/Plots/Adadelta_LR_vs_Loss.png" height="300"/>           |  <img src="src/Eurlex-4K/Plots/Adadelta_LR_vs_P@1.png" height="300"/>
-Adam                | <img src="src/Eurlex-4K/Plots/Adam_LR_vs_Loss.png" height="300"/>               |  <img src="src/Eurlex-4K/Plots/Adam_LR_vs_P@1.png" height="300"/>
-Adam with AMSgrad   | <img src="src/Eurlex-4K/Plots/Adam_with_AMSgrad_LR_vs_Loss.png" height="300"/>  |  <img src="src/Eurlex-4K/Plots/Adam_with_AMSgrad_LR_vs_P@1.png" height="300"/>
-AdamW               | <img src="src/Eurlex-4K/Plots/AdamW_LR_vs_Loss.png" height="300"/>              |  <img src="src/Eurlex-4K/Plots/AdamW_LR_vs_P@1.png" height="300"/>
+Adagrad             | <img src="Plots/Adagrad_LR_vs_Loss.png" height="300"/>            |  <img src="Plots/Adagrad_LR_vs_P@1.png" height="300"/>
+Adadelta            | <img src="Plots/Adadelta_LR_vs_Loss.png" height="300"/>           |  <img src="Plots/Adadelta_LR_vs_P@1.png" height="300"/>
+Adam                | <img src="Plots/Adam_LR_vs_Loss.png" height="300"/>               |  <img src="Plots/Adam_LR_vs_P@1.png" height="300"/>
+Adam with AMSgrad   | <img src="Plots/Adam_with_AMSgrad_LR_vs_Loss.png" height="300"/>  |  <img src="Plots/Adam_with_AMSgrad_LR_vs_P@1.png" height="300"/>
+AdamW               | <img src="Plots/AdamW_LR_vs_Loss.png" height="300"/>              |  <img src="Plots/AdamW_LR_vs_P@1.png" height="300"/>
 
 ### Comparison of Adam vs AdamW w.r.t. Weight Decay
 Here we compare the test Precision@1 for Adam and AdamW with different weight decays. For the same learning rate, we observe that Adam fails to train for non-zero weight decay while AdamW doesn't suffer from any such problem. It's worth noting that weight decay seems to play no significant effect on the final results obtained which might be happening because of already present heavy regularization from dropout (both in DistilBERT and just before fully connected linear layer).
 
 Adam                                                            |  AdamW
 :--------------------------------------------------------------:|:---------------------------------------------------------------:
-<img src="src/Eurlex-4K/Plots/Adam_weight_decay_ablation.png" height="300"/>  |  <img src="src/Eurlex-4K/Plots/AdamW_weight_decay_ablation.png" height="300"/>
+<img src="Plots/Adam_weight_decay_ablation.png" height="300"/>  |  <img src="Plots/AdamW_weight_decay_ablation.png" height="300"/>
 
 ## Discussion
 It seems that during most of the failed runs, the DistilBERT model is representing all the documents to a single point in the vector space and then the best the final classifier layer can do is assign the fixed point to the most frequently occuring label in the training dataset.
