@@ -92,7 +92,37 @@ The above table shows test accuracies for hyperparameters at ``learning rate = 1
 The clear-winners in the Tiny ImageNet experiments were the Adam Optimizers. The difference in their accuracies is not too significant from each other which makes it difficult to pick a clear-winner. However, if we had to choose, we would say it is AdamW due to its high performance and overall robustness to hyperparameters such as learning rate, momentum, and weight decay.
 
 ----
+## CIFAR-10 CNN
 
+### Dataset
+The CIFAR-10 Dataset is a well balanced dataset of 10 classes with small 32 x 32 colored images. This data was provided through the torchvision datasets library [1]
+
+###**Task and Model**
+The intention to this dataset and task is to demostrate the effects of an optimizer on a more straight forward model and dataset. Initially, an extremely simple model was used which yielded accuracies between 60-65. However, as these results were found unsatisfactory, we decided to use a model inspired by vgg16[2]. Code backbone was provided through Kaggle guide [3]. Due to confidence gained on model default parameters through the testing on learning rate (explained later), any hyper parameter not tested was left as the default provided in pytorch [4]. The model was initially tested for 20 epochs but was found to converge within 10 epochs, so all tests are done with either 8 or 10 epochs.
+
+### **Results**
+#### *Training Loss over Epochs for Each Optimizer*
+As can be seen, all the models generally converge to the same results. That being said however, we generally see the adam variant model outperforming adagrad and adadelta with the amsgrad optimizer performing the best.
+
+
+
+#### *Effect of Learning Rate on Performance*
+For this test, we ran our model with each optimizer at 3 different learning rates. These learning rates were found by multiplying PyTorch's default learning rate for each respective optimzer times 10, 1, and 0.1.
+
+The results of these tests show the strength of PyTorche's default hyper parameters. We consistently see the default values outperfom its neighboring variants with the single potential exception in adadelta in which the 0.1 hyper parameter ever  so slightly outperforms the defaul value of 1. However,  when testing with other models, this was found to be a single exception since the learning rate of 1 would outperform 0.1 in all other tests, thus 1 was the only point graphed. For all other tests the default learning rate was used.
+
+#### *Effect of Momentum on Performance*
+When testing with momentum we see that there is not much differences in the result. The biggest diference is how long it takes to achieve the higher results the model can produce. We see 0.99 take the longest, and then 0, then 0.9 and finally 0.5 seems to provide the best results initially.
+
+#### *Effect of Weight Decay on Adam and AdamW*
+Weight decay values were chosen as decreasing value and also no weight decay.
+
+As previously mentioned, the effects of different weight decay values on adamw were not distinguishable and resulted in similar Accuracies. However, when looking at these values within adam we see a more diverse difference. We suprisingly see that a value of 0.1 vauses the model to never converge, although it is difficult to know if this is an outlier or if this is a result of a large weight decay. Additionally we see that the model performs the best with either no weight decay or extremely small.
+
+[1] https://pytorch.org/vision/stable/datasets.html#cifar
+[2] https://github.com/kuangliu/pytorch-cifar/blob/master/models/vgg.py
+[3] https://www.kaggle.com/vikasbhadoria/cifar10-high-accuracy-model-build-on-pytorch
+[4] https://pytorch.org/docs/stable/optim.html
 ## VAE Experiments
 
 ### **Task and Dataset**
