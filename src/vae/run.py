@@ -119,10 +119,11 @@ def plot_loss_curves(split, lrs):
                 'ylabel': 'Negative ELBO',
             })
 
-def print_final_bpds(lrs):
-    for lr in lrs:
-        results = {}
-        for opt_name in OPT_NAMES:
+def print_final_losses(lrs):
+    results = {}
+    for opt_name in OPT_NAMES:
+        results[opt_name] = {}
+        for lr in lrs:
             out_dir = f'results/compare_opts/lr={lr}/{opt_name}'
             if not os.path.exists(os.path.join(out_dir, 'FINISHED')):
                 print(f'Skipping lr={lr} due to missing runs.')
@@ -131,19 +132,12 @@ def print_final_bpds(lrs):
             fn = sorted(glob.glob(os.path.join(out_dir, 'ckpt_*')))[-1]
             print(f'Processing {fn}')
             stats = torch.load(fn)['stats']
-            results[opt_name] = {
-                'x': 10 * np.arange(1, len(stats['loss']) + 1),
-                'y': stats['loss'],
-            }
+            results[opt_name][lr] = stats['eval_loss'][-1]
 
-        plot(f'plots/loss_curves..lr={lr}',
-            results,
-            smooth=100,
-            skip_first=100,
-            set_kwargs = {
-                'ylim': (40, 200)
-            })
-
+    for opt_name in OPT_NAMES:
+        print(f'Optimizer {opt_name}:')
+        for lr in lrs:
+            print(f'  -> lr={lr}: {results[opt_name][lr]:.2f}')
 
 
 if __name__ == '__main__':
@@ -151,5 +145,5 @@ if __name__ == '__main__':
         'compare_opts': compare_opts,
         'plot_train_loss': functools.partial(plot_loss_curves, 'train'),
         'plot_test_loss': functools.partial(plot_loss_curves, 'test'),
-        'print_final_bpds': print_final_bpds,
+        'print_final_losses': print_final_losses,
     })

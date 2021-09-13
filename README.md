@@ -216,7 +216,7 @@ Here we display a plot of training loss measured every 10 steps, smoothed out us
 
 ![Training loss convergence plot.](./src/vae/plots/train_loss..lr=0.001.png)  
 
-As shown in the plot, Adam and AdamW optimizers achieve noticeably faster convergence in training loss.  This trend was consistent across various learning rates we considered: `0.00005, 0.0001, 0.0005, 0.001`.
+As shown in the plot, Adam and AdamW optimizers achieve noticeably faster convergence in training loss.  This trend was consistent across various learning rates we considered: `1e-5, 5e-5, 1e-4, 5e-4, 1e-3`.
 
 We also notice that Adadelta, Adam and AdamW exhibit relatively stable training compared to the other two (Adagrad, Amsgrad) with much less fluctuations in the loss curve. 
 As expected, however, training stability improves when using a smaller learning rate, e.g. `lr=0.0001` as shown below:
@@ -231,12 +231,30 @@ We also measured the test set performance of the model after each epoch of train
 
 #### **Effect of Learning Rate**
 
-TODO
+To study the effect of learning rate on different optimizers, we trained multiple models using different (learning rate, optimizer) pairs.  Below are the final test set losses achieved after 150 epochs, with best result for each learning rate bolded:
+
+|          | lr=1e-5   |  lr=5e-5  | lr=1e-4   | lr=5e-4   | lr=1e-3   |
+|----------|-----------|-----------|-----------|-----------|-----------|
+| Adagrad  | 171.45    |  91.00    | 65.47     | 60.18     | 81.99     |
+| Adadelta | 252.25    |  136.16   | 91.08     | 60.94     | 58.75     |
+| Adam     | 56.33     |  55.88    | 55.34     | 60.72     | 56.09     |
+| Amsgrad  | 63.72     |  55.88    | 56.34     | 69.85     | 111.46    |
+| AdamW    | **56.16** | **55.35** | **56.31** | **57.30** | **55.53** |
+
+As clearly shown here, AdamW was the clear winner, closely followed by Adam.  Interestingly, Both AdamW and Adam were able to achieve very similar final performance numbers irrespective of the learning rate, showing robustness to the learning rate hyperparameter.  The worst performers were Adagrad and Adadelta, which proved to be extremely sensitive to the learning rate.
 
 
 #### **Samples from the Model**
 
-TODO
+For visualization purposes, we also include some reconstructions as well as samples from the best-performing model (`AdamW` with `lr=5e-5`).
+
+Reconstructions: 
+
+![Reconstructions.](./src/vae/plots/svhn_reconsts.png)  
+
+Samples: 
+
+![Samples.](./src/vae/plots/svhn_samples.png)  
 
 # Reference
 **Any code that you borrow or other reference should be properly cited.**
