@@ -56,6 +56,7 @@ Adam                                                            |  AdamW
 ## Discussion
 It seems that during most of the failed runs, the DistilBERT model is representing all the documents to a single point in the vector space and then the best the final classifier layer can do is assign the fixed point to the most frequently occuring label in the training dataset. This is shown in following attention heat maps of different layers after a failed training.
 
-`Layer 0` | `Layer 1` | `Layer 2` | `Layer 5`
-:-------:|:--------:|:--------:|:-------:
-<img src="Plots/L0.png" width="300"/> | <img src="Plots/L1.png" width="300"/> | <img src="Plots/L2.png" width="300"/> | <img src="Plots/L5.png" width="300"/>
+Training | `Layer 0` | `Layer 1` | `Layer 2` | `Layer 5`
+:-------:|:-------:|:--------:|:--------:|:-------:
+Successful | <img src="Plots/L0-correct.png" width="300"/> | <img src="Plots/L1-correct.png" width="300"/> | <img src="Plots/L2-correct.png" width="300"/> | <img src="Plots/L5-correct.png" width="300"/>
+Failed | <img src="Plots/L0.png" width="300"/> | <img src="Plots/L1.png" width="300"/> | <img src="Plots/L2.png" width="300"/> | <img src="Plots/L5.png" width="300"/>
