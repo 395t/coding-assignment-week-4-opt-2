@@ -188,10 +188,6 @@ In these test, we see that although the results are all generally extremely simi
 ----
 
 # Multi-Label Text Classification on EURLex-4K
-## TL;DR
-* Fine-tuning BERT on large output-space is brittle and seems to work only in some sweetspot of hyperparameters
-* Adam and its variants perform the best with learning rate around ```1e-4```
-* AdamW works better than Adam when using weight decay during training
 
 ## Running the Code
 ``` bash
@@ -249,6 +245,11 @@ Run | `Layer 0` | `Layer 1` | `Layer 2` | `Layer 5`
 :-------:|:-------:|:--------:|:--------:|:-------:
 Successful | <img src="src/Eurlex-4K/Plots/L0-correct.png" width="300"/> | <img src="src/Eurlex-4K/Plots/L1-correct.png" width="300"/> | <img src="src/Eurlex-4K/Plots/L2-correct.png" width="300"/> | <img src="src/Eurlex-4K/Plots/L5-correct.png" width="300"/>
 Failed | <img src="src/Eurlex-4K/Plots/L0.png" width="300"/> | <img src="src/Eurlex-4K/Plots/L1.png" width="300"/> | <img src="src/Eurlex-4K/Plots/L2.png" width="300"/> | <img src="src/Eurlex-4K/Plots/L5.png" width="300"/>
+
+## TL;DR
+* Fine-tuning BERT on large output-space is brittle and seems to work only in some sweetspot of hyperparameters
+* Adam and its variants perform the best with learning rate around ```1e-4```
+* AdamW works better than Adam when using weight decay during training
 
 ## VAE Experiments
 
